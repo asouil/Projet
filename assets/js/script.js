@@ -87,7 +87,7 @@ function detecteclic(un, deux){
 		}
 	else 
 	{
-		if(validmove(position)){
+		
 		res[0]=position.slice(0,1);
 		res[1]=position.slice(2,3);
 			if(plateau[un][deux]==plateau[res]){
@@ -102,17 +102,15 @@ function detecteclic(un, deux){
 				document.getElementById(un+"-"+deux).innerHTML=document.getElementById(res[0]+"-"+res[1]).innerHTML;
 				document.getElementById(res[0]+"-"+res[1]).innerHTML=temp;
 				plateau[res[0]][res[1]]=position;
-
 				position=null;
 				return alignement(un, deux, 0, 0);
 			}
 		}
-		else {
-			afficheTextAnnonce("Mouvement non autorisé");
-		}
+
 	}
-}
+
 function validmove(position,un,deux){
+	//fonction essayer d'autoriser moins de mouvements
 	res[0]=position.slice(0,1);
 	res[1]=position.slice(2,3);
 	if((res[0]==un+1||res[1]==deux+1)||(res[0]==un+1||res[1]==deux-1)||(res[0]==un-1||res[1]==deux+1)){
