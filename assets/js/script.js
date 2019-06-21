@@ -33,6 +33,7 @@ function NewGame(){
 	
 	afficheTextAnnonce("Le jeu commence!");
 	jeu=true;
+	score=0;
 	creerTableau();
 	
 }
@@ -113,7 +114,7 @@ function validmove(position,un,deux){
 	//fonction essayer d'autoriser moins de mouvements
 	res[0]=position.slice(0,1);
 	res[1]=position.slice(2,3);
-	if((res[0]==un+1||res[1]==deux+1)||(res[0]==un+1||res[1]==deux-1)||(res[0]==un-1||res[1]==deux+1)){
+	if(res[0]==un+1||res[1]==deux+1||res[1]==deux-1||res[0]==un-1||res[1]==deux+1){
 		return true;
 	}
 	return false;
