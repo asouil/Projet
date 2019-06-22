@@ -30,10 +30,11 @@ function NewGame(){
 			plateau[i][j]=remplirCases(i,j);
 		}
 	}
-	
+
 	afficheTextAnnonce("Le jeu commence!");
 	jeu=true;
 	score=0;
+	document.getElementById("score").innerHTML="Score : "+score;
 	creerTableau();
 	
 }
@@ -82,7 +83,7 @@ function detecteclic(un, deux){
 	//clic, clic à coté, si alignement ok sinon rien faire
 	if(!position){			
 		afficheTextAnnonce("selection ok");
-		position=un+' '+deux;
+		position=un+'-'+deux;
 		//stocker la position
 		return null;
 		}
@@ -107,20 +108,10 @@ function detecteclic(un, deux){
 				return alignement(un, deux, 0, 0);
 			}
 		}
-
 	}
 
-function validmove(position,un,deux){
-	//fonction essayer d'autoriser moins de mouvements
-	res[0]=position.slice(0,1);
-	res[1]=position.slice(2,3);
-	if(res[0]==un+1||res[1]==deux+1||res[1]==deux-1||res[0]==un-1||res[1]==deux+1){
-		return true;
-	}
-	return false;
-}
+
 function alignement(ligne, colonne, l, c){
-	console.log("valeur:"+ligne+" "+colonne+" / increment "+l+" "+c);
 	
 	if (l==0 && c==0) {
 		align.push(ligne+"-"+colonne);
@@ -128,25 +119,27 @@ function alignement(ligne, colonne, l, c){
 		var va =1 + alignement (ligne, colonne-1, 0, -1) + alignement (ligne, colonne+1, 0, 1);
 		/* on vérifie la colonne à la verticale */
 		var vb =1 + alignement (ligne-1, colonne, -1, 0) + alignement (ligne+1, colonne, 1, 0);
-		/* On vérifie la diagonale droite (bas gauche haut droite) */
-		var vc =1 + alignement (ligne-1, colonne+1, -1, 1) + alignement (ligne+1, colonne-1, 1, -1);
-		/* Puis la diagonale gauche */
-		var vd =1 + alignement (ligne-1, colonne-1, -1, -1) + alignement (ligne+1, colonne+1, 1, 1);
-		/* si l'une des valeurs renvoie 4 c'est la fin de la partie  */
-		if(va>=3 || vb>=3 || vc>=3 || vd>=3){
-			//destroy
+		/* si l'une des valeurs renvoie 3 ou plus, elle explose les pièces  */
+		if(va>=3 || vb>=3 ){
+			//destroy (problème rencontré: seulement trois pièces explosent alors que la fonction 
+			//ne devrait pas s'arrêter tant que toutes les pièces alignées ne soient prises en compte)
 			return explosionDePieces(align);
-		
-		}else{
-			return 0;
+		}
+		else {
+			align=[];
+			return false;
 		}
 	}
 	
 	/* On ne calcule pas si on sort du tableau */
 	if((ligne < nblignes) && (ligne >= 0) && (colonne < nbcolonnes) && (colonne >= 0)&& (ligne+l < nblignes) && (ligne+l >= 0) && (colonne+c < nbcolonnes) && (colonne+c >= 0)){
 		if(plateau[ligne][colonne]==plateau[ligne+l][colonne+c]) {
+			console.log("valeur:"+ligne+" "+colonne+" / increment "+l+" "+c);
 			align.push(ligne+"-"+colonne);
 			return 1 + alignement(ligne+l, colonne+c, l ,c);
+		}
+		else {
+			return 0; 
 		}
 	}
 	return false;
@@ -154,7 +147,7 @@ function alignement(ligne, colonne, l, c){
 	//	return false;
 	//}
 }
-//fonctions manquantes à voir/modifier
+
 
 function explosionDePieces(tableau){
 	var ligne;
@@ -184,6 +177,17 @@ function explosionDePieces(tableau){
 		score+=10;
 		document.getElementById("score").innerHTML="Score : "+score;
 	}
-	tableau=[];
+	align=[];
 }
 
+//fonctions manquantes à voir/modifier
+
+function validmove(pos,un,deux){
+	//fonction essayer d'autoriser moins de mouvements
+	res[0]=pos.slice(0,1);
+	res[1]=pos.slice(2,3);
+	if(res[0]==un+1||res[1]==deux+1||res[1]==deux-1||res[0]==un-1||res[1]==deux+1){
+		return true;
+	}
+	return false;
+}
